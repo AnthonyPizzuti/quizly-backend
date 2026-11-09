@@ -1,0 +1,9 @@
+env/
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+media/
+*.mp3
+*.m4a
+*.webm
