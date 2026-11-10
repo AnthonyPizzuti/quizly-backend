@@ -29,7 +29,8 @@ Write the quiz in the same language as the transcript.
 The quiz must follow this exact structure:
 {{
   "title": "Create a concise quiz title based on the topic of the transcript.",
-  "description": "Summarize the transcript in no more than 150 characters. Do not include any quiz questions or answers.",
+  "description": "Summarize the transcript in no more than 150 characters.
+    Do not include any quiz questions or answers.",
   "questions": [
     {{
       "question_title": "The question goes here.",
@@ -43,8 +44,10 @@ The quiz must follow this exact structure:
 
 Requirements:
 - Each question must have exactly 4 distinct answer options.
-- Only one correct answer is allowed per question, and it must be present in 'question_options'.
-- The output must be valid JSON and parsable as-is (e.g., using Python's json.loads).
+- Only one correct answer is allowed per question,
+  and it must be present in 'question_options'.
+- The output must be valid JSON and parsable as-is
+  (e.g., using Python's json.loads).
 - Do not include explanations, comments, or any text outside the JSON.
 
 Transcript:
@@ -53,7 +56,7 @@ Transcript:
 
 
 def extract_video_id(url):
-    """Return the 11-character YouTube video ID or None if the URL is invalid."""
+    """Return the 11-character YouTube video ID, or None if invalid."""
     match = YOUTUBE_ID_PATTERN.search(url or "")
     return match.group(1) if match else None
 
@@ -97,7 +100,9 @@ def get_transcript(video_url):
 
 def clean_json_response(text):
     """Remove Markdown code fences like ```json from the AI response."""
-    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.IGNORECASE)
+    cleaned = re.sub(
+        r"^```(?:json)?\s*", "", text.strip(), flags=re.IGNORECASE
+    )
     return re.sub(r"\s*```$", "", cleaned)
 
 
@@ -122,7 +127,8 @@ def is_valid_question(question):
     """Check that a question has a title, 4 options and a valid answer."""
     options = question.get("question_options", [])
     has_title = bool(question.get("question_title"))
-    return has_title and len(options) == 4 and question.get("answer") in options
+    has_valid_answer = question.get("answer") in options
+    return has_title and len(options) == 4 and has_valid_answer
 
 
 def is_valid_quiz_data(quiz_data):

@@ -24,7 +24,7 @@ def delete_auth_cookies(response):
 
 
 def blacklist_refresh_token(raw_token):
-    """Put the given refresh token on the blacklist so it can't be used again."""
+    """Put the refresh token on the blacklist so it can't be used again."""
     if raw_token is None:
         return
     try:

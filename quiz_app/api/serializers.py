@@ -28,7 +28,7 @@ class QuestionWithTimestampsSerializer(serializers.ModelSerializer):
 
 
 class QuizSerializer(serializers.ModelSerializer):
-    """Serializes a quiz with its questions; only title and description are editable."""
+    """Serializes a quiz with questions; only title/description editable."""
 
     questions = QuestionSerializer(many=True, read_only=True)
 

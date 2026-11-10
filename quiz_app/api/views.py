@@ -16,14 +16,15 @@ from .serializers import (
 
 
 class QuizListCreateView(APIView):
-    """Lists the quizzes of the user and creates new quizzes from YouTube URLs."""
+    """Lists the user's quizzes and creates new ones from YouTube URLs."""
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """Return all quizzes of the authenticated user."""
         quizzes = Quiz.objects.filter(user=request.user)
-        serializer = QuizSerializer(quizzes.prefetch_related("questions"), many=True)
+        quizzes = quizzes.prefetch_related("questions")
+        serializer = QuizSerializer(quizzes, many=True)
         return Response(serializer.data)
 
     def post(self, request):

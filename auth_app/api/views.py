@@ -15,6 +15,11 @@ from auth_app.utils import (
 )
 from .serializers import RegistrationSerializer
 
+LOGOUT_MESSAGE = (
+    "Log-Out successfully! All Tokens will be deleted. "
+    "Refresh token is now invalid."
+)
+
 
 class RegistrationView(APIView):
     """Registers a new user."""
@@ -26,10 +31,13 @@ class RegistrationView(APIView):
         """Validate the data and save the new user."""
         serializer = RegistrationSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
         serializer.save()
         return Response(
-            {"detail": "User created successfully!"}, status=status.HTTP_201_CREATED
+            {"detail": "User created successfully!"},
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -58,18 +66,14 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    """Logs out the user, blacklists the refresh token and deletes the cookies."""
+    """Logs out the user, blacklists the refresh token, deletes cookies."""
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         """Invalidate the refresh token and remove both auth cookies."""
         blacklist_refresh_token(request.COOKIES.get("refresh_token"))
-        response = Response(
-            {
-                "detail": "Log-Out successfully! All Tokens will be deleted. Refresh token is now invalid."
-            }
-        )
+        response = Response({"detail": LOGOUT_MESSAGE})
         delete_auth_cookies(response)
         return response
 
