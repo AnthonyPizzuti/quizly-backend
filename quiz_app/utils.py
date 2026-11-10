@@ -20,7 +20,7 @@ YOUTUBE_ID_PATTERN = re.compile(
     r"([A-Za-z0-9_-]{11})"
 )
 WHISPER_MODEL_NAME = "base"
-GEMINI_MODEL_NAME = "gemini-3.7-flash"
+GEMINI_MODEL_NAME = "gemini-3.5-flash-lite"
 
 QUIZ_PROMPT = """
 Based on the following transcript, generate a quiz in valid JSON format.
@@ -106,7 +106,8 @@ def generate_quiz_data(transcript):
     client = genai.Client(
         api_key=settings.GEMINI_API_KEY,
         http_options=types.HttpOptions(
-            retry_options=types.HttpRetryOptions(attempts=3)
+            timeout=60000,
+            retry_options=types.HttpRetryOptions(attempts=3),
         ),
     )
     response = client.models.generate_content(
