@@ -28,22 +28,24 @@ Write the quiz in the same language as the transcript.
 
 The quiz must follow this exact structure:
 {{
-  "title": "A concise quiz title based on the topic of the transcript.",
-  "description": "A summary of the transcript in no more than 150 characters.",
+  "title": "Create a concise quiz title based on the topic of the transcript.",
+  "description": "Summarize the transcript in no more than 150 characters. Do not include any quiz questions or answers.",
   "questions": [
     {{
       "question_title": "The question goes here.",
       "question_options": ["Option A", "Option B", "Option C", "Option D"],
       "answer": "The correct answer from the above options"
-    }}
+    }},
+    ...
+    (exactly 10 questions)
   ]
 }}
 
 Requirements:
-- Create exactly 10 questions.
 - Each question must have exactly 4 distinct answer options.
-- Only one answer is correct and it must be one of the 'question_options'.
-- Do not include explanations or any text outside the JSON.
+- Only one correct answer is allowed per question, and it must be present in 'question_options'.
+- The output must be valid JSON and parsable as-is (e.g., using Python's json.loads).
+- Do not include explanations, comments, or any text outside the JSON.
 
 Transcript:
 {transcript}
@@ -93,6 +95,12 @@ def get_transcript(video_url):
         return transcribe_audio(tmp_filename)
 
 
+def clean_json_response(text):
+    """Remove Markdown code fences like ```json from the AI response."""
+    cleaned = re.sub(r"^```(?:json)?\s*", "", text.strip(), flags=re.IGNORECASE)
+    return re.sub(r"\s*```$", "", cleaned)
+
+
 def generate_quiz_data(transcript):
     """Let Gemini Flash create the quiz and return it as a dictionary."""
     client = genai.Client(
@@ -106,7 +114,7 @@ def generate_quiz_data(transcript):
         contents=QUIZ_PROMPT.format(transcript=transcript),
         config={"response_mime_type": "application/json"},
     )
-    return json.loads(response.text)
+    return json.loads(clean_json_response(response.text))
 
 
 def is_valid_question(question):
