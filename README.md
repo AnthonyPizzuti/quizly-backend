@@ -32,12 +32,23 @@ and communicates with this backend via REST.
 
 | Tool | Why | Installation (Windows) |
 |---|---|---|
-| Python 3.12+ | Runs the backend (tested with 3.14) | [python.org](https://www.python.org/downloads/) |
+| Python 3.12 – 3.15 | Runs the backend (tested with 3.14 and 3.15) | [python.org](https://www.python.org/downloads/) |
 | **FFmpeg** | Required by Whisper AI | `winget install Gyan.FFmpeg` |
 | **Deno** | Used by yt-dlp to solve YouTube's JavaScript challenges | `winget install DenoLand.Deno` |
 | Gemini API key | Quiz generation with Gemini Flash (free) | [Google AI Studio](https://aistudio.google.com/apikey) |
 
 On macOS use `brew install ffmpeg deno`, on Linux use your package manager.
+
+> **Platform note:** Whisper needs PyTorch. PyTorch publishes wheels for
+> Windows (x64), Linux (x64, arm64) and macOS on Apple Silicon (macOS 14+ for
+> Python 3.15). **Intel Macs are not supported**: current PyTorch has no
+> wheels for them, so the installation fails there.
+
+> **Windows:** PyTorch contains very deeply nested files. Clone the project into
+> a **short path** (e.g. `C:\dev\quizly-backend`). In a long path `pip install`
+> can fail with `No such file or directory ... LICENSE.Apache-2.0` because of
+> the Windows path length limit.
+
 Check the installation with:
 
 ```bash
